@@ -30,8 +30,6 @@ By default, the script will run in the current folder where you execute the comm
 
 It mounts the current folder in the Docker container, more specifically at the `/bdad` location; this way, it has access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
 
-Two files will be produced.
-
 ```txt
 usage: ./check.sh [-t] [-b] [-s] [-d] [-h]
   -t      test triggers and queries (3rd delivery only)
