@@ -26,9 +26,11 @@ The best part is, you can set it up in any computer and run it locally!
 ## How to use
 
 1. Install [Docker](https://docs.docker.com/get-docker/).
-2. Place your .sql files in a folder
-3. Run the commands below in that folder (don't forget to `cd`)
-4. Check the `output.txt` and `diagram.png` files that it produces. The final database will also be created with the name `database.db`
+2. Place your .sql files in a folder X
+  - Professors: place the works of each group in separate subdirectories inside X
+3. Run the commands below in folder X (don't forget to `cd` to X)
+4. Check the `output.txt` and `diagram.png` files that it produces. The final database will also be created with the name `database.db`.
+  - Professors: each group's outputs will be inside corresponding subdirectories of X
 
 ### In Linux / Mac
 
