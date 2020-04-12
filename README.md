@@ -22,31 +22,31 @@ The best part is, you can set it up in any computer and run it locally!
 - It produces two outputs
   1. `output.txt` - The result of the execution of the scripts
   2. `diagram.png` - The reverse-engineered database diagram of your database
+
 ## How to use
 
-First, install [Docker](https://docs.docker.com/get-docker/).
-
-By default, the script will run in the current folder where you execute the commands below. It also includes a batch mode for professors to run the script on all subdirectories of the current directory. The code executed is the same, it just iterates over all subdirs if the `-b` parameter is specified. If the batch mode is specified, operations are executed in parallel to take advantage of a multicore processor, if you have one.
-
-It mounts the current folder in the Docker container, more specifically at the `/bdad` location; this way, it has access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
+1. Install [Docker](https://docs.docker.com/get-docker/).
+2. Place your .sql files in a folder
+3. Run the commands below in that folder (don't forget to `cd`)
+4. Check the `output.txt` and `diagram.png` files that it produces. The final database will also be created with the name `database.db`
 
 ### In Linux / Mac
 
 ```bash
-docker run -it -v $(pwd):/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -b -s -d
-#add or remove arguments at the end of this command line to change the behaviour of the script accordingly
+docker run -it -v $(pwd):/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+#add or remove arguments at the end of this command line to change the behaviour of the script accordingly. -t argument checks queries and triggers, besides database creation and seeding
 ```
 
 ### In Windows CMD:
 
 ```shell
-docker run -it -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -b -s -d
+docker run -it -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ### In Windows PowerShell :
 
 ```PowerShell
-docker run -it -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -b -s -d
+docker run -it -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ## Possible arguments:
@@ -57,6 +57,14 @@ docker run -it -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -
   -d      do not generate diagram using schemacrawler
   -h      print this help
 ```
+
+### For professors
+
+By default, the script will run in the current folder where you execute the commands below. It also includes a batch mode for professors to run the script on all subdirectories of the current directory. The code executed is the same, it just iterates over all subdirs if the `-b` parameter is specified. If the batch mode is specified, operations are executed in parallel to take advantage of a multicore processor, if you have one.
+
+#### For the curious
+
+This command mounts the current folder in a Docker container, more specifically at its `/bdad` location; this way, it has bidirectional access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
 
 ## Important disclaimer
 
