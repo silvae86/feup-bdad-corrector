@@ -30,15 +30,6 @@ By default, the script will run in the current folder where you execute the comm
 
 It mounts the current folder in the Docker container, more specifically at the `/bdad` location; this way, it has access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
 
-```txt
-usage: ./check.sh [-t] [-b] [-s] [-d] [-h]
-  -t      test triggers and queries (3rd delivery only)
-  -b      enable batch correction (scan subfolders of current one), useful for professors
-  -s      (show/copy-paste scripts of students to the output.txt file after running checks
-  -d      do not generate diagram using schemacrawler
-  -h      print this help
-```
-
 ### In Linux / Mac
 
 ```bash
@@ -56,6 +47,15 @@ docker run -it -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t 
 
 ```PowerShell
 docker run -it -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -b -s -d
+```
+
+## Possible arguments:
+```txt
+  -t      test triggers and queries (3rd delivery only)
+  -b      enable batch correction (scan subfolders of current one), useful for professors
+  -s      (show/copy-paste scripts of students to the output.txt file after running checks
+  -d      do not generate diagram using schemacrawler
+  -h      print this help
 ```
 
 ## Important disclaimer
