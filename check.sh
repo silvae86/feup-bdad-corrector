@@ -142,7 +142,9 @@ function run_everything() {
 		printf "##############################################\n\n"
 
 		printf "${PREAMBLE}${CHECK_CONSISTENCY_COMMAND}" | sqlite3 database.db >> output.txt 2>&1 && \
-		printf "Database is consistent.\n" || \
+		printf "Database is consistent\n" && \
+    printf "Attention: An empty database is also consistent.\n" && \
+    printf "Check for errors in creation and seeding.\n" ||
 		printf "Inconsistencies detected in DB!\n"
 
 		if [[ "$TEST_TRIGGERS_AND_QUERIES" == "true" ]]; then
