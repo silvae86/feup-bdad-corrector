@@ -9,7 +9,7 @@ RUN apk add util-linux
 USER schcrwlr
 
 COPY ./check.sh /feup-bdad-corrector/check.sh
-COPY ./schemacrawler.config.properties /feup-bdad-corrector/schemacrawler.config.properties
+COPY ./schemacrawler.config.properties /opt/schemacrawler/config/schemacrawler.config.properties
 
 RUN /feup-bdad-corrector/check.sh -h
 
