@@ -34,7 +34,9 @@ The best part is, you can set it up in any computer and run it locally!
 
 ```bash
 docker run -it -v $(pwd):/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
-#add or remove arguments at the end of this command line to change the behaviour of the script accordingly. -t argument checks queries and triggers, besides database creation and seeding
+#add or remove arguments at the end of this command line
+# to change the behaviour of the script accordingly.
+# IMPORTANT: the `-t` argument checks queries and triggers, besides database creation and seeding
 ```
 
 ### In Windows CMD:
