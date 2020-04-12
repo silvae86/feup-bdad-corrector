@@ -1,7 +1,9 @@
 # feup-bdad-corrector
 An auto corrector for FEUP's Databases Course of the 2nd year of the Masters in Informatics Engineering.
 
-It allows for an automates check of the more code-oriented deliveries (2nd and 3rd), and is packaged as a Docker image for zero-configuration usage.
+It tries to automate the checking of the more code-oriented deliveries (2nd and 3rd), and is packaged as a Docker image for zero-configuration usage.
+
+The best part is, you can set it up in any computer and run it locally!
 
 ## What does it do?
 
@@ -24,7 +26,7 @@ It allows for an automates check of the more code-oriented deliveries (2nd and 3
 
 First, install [Docker](https://docs.docker.com/get-docker/).
 
-By default, the script will run in the current folder where you execute the commands below. It also includes a batch mode for professors to run the script on all subdirectories of the current directory. The code executed is the same, it just iterates over all subdirs if the `-b` parameter is specified.
+By default, the script will run in the current folder where you execute the commands below. It also includes a batch mode for professors to run the script on all subdirectories of the current directory. The code executed is the same, it just iterates over all subdirs if the `-b` parameter is specified. If the batch mode is specified, operations are executed in parallel to take advantage of a multicore processor, if you have one.
 
 It mounts the current folder in the Docker container, more specifically at the `/bdad` location; this way, it has access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
 
