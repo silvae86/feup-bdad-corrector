@@ -33,7 +33,8 @@ The best part is, you can set it up in any computer and run it locally!
 ### In Linux / Mac
 
 ```bash
-docker run -it -v $(pwd):/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+docker pull joaorosilva/feup-bdad-corrector:latest
+docker run -v "$(pwd)":/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 # add or remove arguments at the end of this command line
 # to change the behaviour of the script accordingly.
 # IMPORTANT: the `-t` argument checks queries and triggers, besides database creation and seeding
@@ -42,13 +43,15 @@ docker run -it -v $(pwd):/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -
 ### In Windows CMD:
 
 ```shell
-docker run -it -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+docker pull joaorosilva/feup-bdad-corrector:latest
+docker run -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ### In Windows PowerShell :
 
 ```PowerShell
-docker run -it -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+docker pull joaorosilva/feup-bdad-corrector:latest
+docker run -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ## Possible arguments:
