@@ -193,17 +193,17 @@ function run_everything() {
 		printf "###                 All Done               ###\n"
 		printf "##############################################\n\n"
 	}	>> output.txt 2>&1
+
+  cat output.txt
+  cd "$ORIGINAL_DIR"
 }
 
 if [[ "$BATCH_CORRECTION" != "true" ]]; then
 	run_everything "$(pwd)"
-	cat output.txt
 else
 	for d in ./*; do
 	  if [ -d "$d" ]; then
-			run_everything "$d"
-			cat output.txt
-			cd "$ORIGINAL_DIR"
+			run_everything "$d" &
 	  fi
 	done
 	wait
