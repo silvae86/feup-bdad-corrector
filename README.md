@@ -1,7 +1,7 @@
 # feup-bdad-corrector
 
-[![](https://images.microbadger.com/badges/image/joaorosilva/dendro:master.svg)](https://microbadger.com/images/joaorosilva/dendro:master "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/joaorosilva/dendro:master.svg)](https://microbadger.com/images/joaorosilva/dendro:master "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/joaorosilva/feup-bdad-corrector.svg)](https://microbadger.com/images/joaorosilva/feup-bdad-corrector "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/joaorosilva/feup-bdad-corrector.svg)](https://microbadger.com/images/joaorosilva/feup-bdad-corrector "Get your own version badge on microbadger.com")
 
 An auto corrector for FEUP's Databases Course of the 2nd year of the Masters in Informatics Engineering.
 
