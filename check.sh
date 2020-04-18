@@ -84,7 +84,7 @@ function diagram
   local diagram_tmp_copy_path="/tmp/$(uuidgen).png"
 	#echo "diagram will be at $diagram_path"
 
-	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_tmp_copy_path" -user -password -loglevel SEVERE -sort-columns -command schema -outputformat png -outputfile "$diagram_tmp_copy_path"
+	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_tmp_copy_path" -user -password -loglevel SEVERE -sort-columns -infolevel maximum -command details -outputformat png -outputfile "$diagram_tmp_copy_path" -g "/feup-bdad-corrector/schemacrawler.config.properties"
 
   mv -f "$diagram_tmp_copy_path" "$diagram_path"
   rm -f "$diagram_tmp_copy_path"
