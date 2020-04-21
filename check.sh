@@ -47,22 +47,31 @@ while getopts 'tbsdh' arg; do
     esac
 done
 
+SECONDS=0
+
+function print_message()
+{
+  local message="$1"
+  local ELAPSED="$(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"
+  printf "[ $ELAPSED ] $message\n"
+}
+
 if [[ "$TEST_TRIGGERS_AND_QUERIES" == "true" ]]; then
-	printf "Testing DB Creation, Populating, Queries and Triggers (Third delivery)...\n"
+	print_message "Testing DB Creation, Populating, Queries and Triggers (Third delivery)..."
 else
-	printf "Testing DB Creation and Populating only (Second delivery)...\n"
+	print_message "Testing DB Creation and Populating only (Second delivery)..."
 fi
 
 if [[ "$BATCH_CORRECTION" == "true" ]]; then
-	printf "Batch Correction Mode engaged! The program will scan all subdirectories and perform correction on all of them. Check output.txt inside each for the results.\n"
+	print_message "Batch Correction Mode engaged! The program will scan all subdirectories and perform correction on all of them. Check output.txt inside each for the results."
 fi
 
 if [[ "$GENERATE_DIAGRAM" == "false" ]]; then
-	printf "Diagram will not be created.\n"
+	print_message "Diagram will not be created."
 fi
 
 if [[ "$SHOW_SCRIPTS_AT_END" == "true" ]]; then
-	printf "Appending a copy of the scripts to the end of the output.txt file.\n"
+	print_message "Appending a copy of the scripts to the end of the output.txt file."
 fi
 
 function exists()
@@ -74,21 +83,11 @@ function exists()
 
 function diagram
 {
-  local database_path="$1"
-  local database_tmp_copy_path="/tmp/$(uuidgen).db"
+  local database_path="$1/database.db"
+  local diagram_path="$1/diagram.png"
+  local target_dir="$2"
 
-	#echo "database is at $database_path"
-  cp "$database_path" "$database_tmp_copy_path"
-
-  local diagram_path="$2"
-  local diagram_tmp_copy_path="/tmp/$(uuidgen).png"
-	#echo "diagram will be at $diagram_path"
-
-	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_tmp_copy_path" -user -password -loglevel SEVERE -sort-columns -infolevel maximum -command details -outputformat png -outputfile "$diagram_tmp_copy_path" -g "/feup-bdad-corrector/schemacrawler.config.properties"
-
-  mv -f "$diagram_tmp_copy_path" "$diagram_path"
-  rm -f "$diagram_tmp_copy_path"
-  rm -f "$database_tmp_copy_path"
+	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_path" -user -password -loglevel SEVERE -sort-columns -infolevel maximum -command details -outputformat png -outputfile "$diagram_path" -g "/feup-bdad-corrector/schemacrawler.config.properties"
 }
 
 function run_queries
@@ -113,98 +112,116 @@ function test_triggers
 	done
 }
 
+function clean_dir()
+{
+  local dir_to_clean="$1"
+  rm -f "$dir_to_clean/database.db"
+  rm -f "$dir_to_clean/output.txt"
+  rm -f "$dir_to_clean/diagram.png"
+}
+
+function copy_results()
+{
+  source="$1"
+  target="$2"
+
+  # echo "Copying $source/database.db to $target..."
+  cp "$source/database.db" "$target"
+  cp "$source/output.txt" "$target"
+  cp "$source/diagram.png" "$target"
+}
+
 function run_everything() {
 	local d="$1"
-	printf "Entering $d...\n\n"
-	cd "$d"
-	rm -f database.db
-	rm -f output.txt
-  rm -f diagram.png
+  local dirname=`basename "$d"`
+  local temp_dir="/tmp/$(uuidgen)"
+  mkdir -p "$temp_dir"
+  cp -R "$d/." "$temp_dir"
+	clean_dir "$d"
+
+  print_message "Running script over $dirname..."
+
+	cd "$temp_dir"
 	touch output.txt
 	{
-		printf "##############################################\n"
-		printf "###         Creating database...          ### \n"
-		printf "##############################################\n"
+    print_message "Running script over $dirname..."
+
+		print_message "Creating database"
 
 		printf "$PREAMBLE" | cat - criar.sql | sqlite3 database.db >> output.txt 2>&1 && \
-		printf "Creates BD without errors.\n" || \
-		printf "Errors creating DB!\n"
+		print_message "Creates BD without errors.\n" || \
+		print_message "Errors creating DB!\n"
 
-		printf "##############################################\n"
-		printf "###          Populating database...        ###\n"
-		printf "##############################################\n\n"
+		print_message "Populating database..."
+
 		printf "$PREAMBLE" | cat - povoar.sql | sqlite3 database.db >> output.txt 2>&1 && \
-		printf "Populates BD without errors.\n" || \
-		printf "Errors populating DB!\n"
+		print_message "Populates BD without errors.\n" || \
+		print_message "Errors populating DB!\n"
 
-		printf "##############################################\n"
-		printf "###  Now checking database consistency...  ###\n"
-		printf "##############################################\n\n"
+		print_message "Now checking database consistency..."
 
 		printf "${PREAMBLE}${CHECK_CONSISTENCY_COMMAND}" | sqlite3 database.db >> output.txt 2>&1 && \
-		printf "Database is consistent\n" && \
-    printf "Attention: An empty database is also consistent.\n" && \
-    printf "Check for errors in creation and seeding.\n" ||
-		printf "Inconsistencies detected in DB!\n"
+		print_message  "Database is consistent\n \
+    Attention: An empty database is also consistent.\n \
+    Check for errors in creation and seeding.\n" ||
+		print_message "Inconsistencies detected in DB!\n"
 
 		if [[ "$TEST_TRIGGERS_AND_QUERIES" == "true" ]]; then
-			printf "##############################################\n"
-			printf "###           Running queries...           ###\n"
-			printf "##############################################\n\n"
+			print_message "Running queries..."
 
 			run_queries && \
-			printf "Queries ran successfully.\n" || \
-			printf "Errors occurred while running queries against DB!\n"
+			print_message "Queries ran successfully.\n" || \
+			print_message "Errors occurred while running queries against DB!\n"
 
-			printf "##############################################\n"
-			printf "###           Running triggers...          ###\n"
-			printf "##############################################\n\n"
+			print_message "Running triggers..."
 
 			test_triggers && \
-			printf "Triggers tested successfully.\n\n" || \
-			printf "Errors occurred while testing triggers!\n\n"
+			print_message "Triggers tested successfully.\n\n" || \
+			print_message "Errors occurred while testing triggers!\n\n"
 		fi
 
 		if [[ "$SHOW_SCRIPTS_AT_END" == "true" ]]; then
-			printf "##############################################\n"
-			printf "###         Create script follows.         ###\n"
-			printf "##############################################\n\n"
+			print_message "Create script follows."
 
 			printf "$PREAMBLE" | cat - criar.sql | cat -n
 
-			printf "##############################################\n"
-			printf "###         Populate script follows.       ###\n"
-			printf "##############################################\n\n"
+			print_message "Populate script follows."
+
 			printf "$PREAMBLE" | cat - povoar.sql | cat -n
 		fi
 
 		if [[ "$GENERATE_DIAGRAM" == "true" ]]; then
 			# generate diagram
-      printf "##############################################\n"
-      printf "###       Generating database diagram.     ###\n"
-      printf "##############################################\n\n"
-			diagram "$(pwd)/database.db" "$(pwd)/diagram.png"
-      printf "##############################################\n"
-      printf "###           Diagram generated.           ###\n"
-      printf "##############################################\n\n"
+      print_message "Generating database diagram"
+			diagram "$(pwd)" "$d" && print_message "Diagram Generated" || print_message "Errors printing diagram"
 		fi
 
-		printf "##############################################\n"
-		printf "###                 All Done               ###\n"
-		printf "##############################################\n\n"
+		print_message "Done for $dirname"
 	}	>> output.txt 2>&1
 
-  cat output.txt
+  copy_results "$temp_dir" "$d" >> /dev/null 2>&1
   cd "$ORIGINAL_DIR"
 }
 
 if [[ "$BATCH_CORRECTION" != "true" ]]; then
 	run_everything "$(pwd)"
+  cat output.txt
 else
+  # run all generation in parallel
 	for d in ./*; do
 	  if [ -d "$d" ]; then
-			run_everything "$d" &
+			run_everything "$(pwd)/${d#.}" &
 	  fi
 	done
 	wait
+
+  print_message "All generation done!"
+
+  # print results sequentially
+  for d in ./*; do
+    if [ -d "$d" ]; then
+      cd "$d"
+      cat output.txt
+    fi
+  done
 fi
