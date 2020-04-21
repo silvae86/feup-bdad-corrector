@@ -138,8 +138,7 @@ function run_everything() {
   mkdir -p "$temp_dir"
   cp -R "$d/." "$temp_dir"
 	clean_dir "$d"
-
-  print_message "Running script over $dirname..."
+  clean_dir "$temp_dir"
 
 	cd "$temp_dir"
 	touch output.txt
