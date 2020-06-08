@@ -140,11 +140,11 @@ function test_triggers
       printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db && \
       printf "\n-----------------------------\n\n"  \
       || ( \
-          printf "Error running trigger ${i}." &&
-          printf "Check for the appropriate error message and validate" &&
+          printf "\n\nError running trigger ${i}." &&
+          printf "Check for the appropriate error message and validate " &&
           printf "if it is really supposed to be like this.\n"
-          printf "If it is a BEFORE INSERT trigger and you intend to block" &&
-          printf "invalid operations, for example, you may safely ignore" &&
+          printf "If it is a BEFORE INSERT trigger and you intend to block an " &&
+          printf "invalid operation, for example, you may safely ignore " &&
           printf "this error message.\n\n" && return 1)
     else
         printf "ERROR: Either ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql or ./gatilho${i}_remove.sql file is missing inside the folder\n"
