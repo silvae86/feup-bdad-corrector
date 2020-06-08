@@ -251,7 +251,7 @@ else
 	  if [ -d "$d" ]; then
       if [[ "$FORCE_SEQUENTIAL" == "true" ]]; then
         run_everything "$(pwd)/${d#.}"
-        cat output.txt
+        cat "$d/output.txt"
       else
         run_everything "$(pwd)/${d#.}" &
       fi
