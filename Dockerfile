@@ -1,4 +1,4 @@
-FROM schemacrawler/schemacrawler:v15.05.01
+FROM schemacrawler/schemacrawler:v16.8.1
 
 USER root
 

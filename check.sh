@@ -85,9 +85,9 @@ function diagram
 {
   local database_path="$1/database.db"
   local diagram_path="$1/diagram.png"
-  # local target_dir="$2"
+  local diagram_title="$2"
 
-	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_path" -user -password -loglevel SEVERE -sort-columns -infolevel maximum -command details -outputformat png -outputfile "$diagram_path" -g "/feup-bdad-corrector/schemacrawler.config.properties"
+	/opt/schemacrawler/schemacrawler.sh --server="sqlite" --database="$database_path" --user="" --password="" --loglevel="INFO" --sort-columns --info-level="maximum" --command="details" --outputformat="png" --output-file="$diagram_path" --title="$diagram_title" #--config-file="/feup-bdad-corrector/schemacrawler.config.properties"
 }
 
 function run_queries
@@ -212,7 +212,7 @@ function run_everything() {
 		if [[ "$GENERATE_DIAGRAM" == "true" ]]; then
 			# generate diagram
       print_message "Generating database diagram"
-			diagram "$(pwd)" "$d" && print_message "Diagram Generated" || print_message "Errors printing diagram"
+			diagram "$(pwd)" "$d" "$dirname" && print_message "Diagram Generated" || print_message "Errors printing diagram"
 		fi
 
 		print_message "Done for $dirname"
