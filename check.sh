@@ -21,12 +21,13 @@ function usage {
     echo "usage: $programname [-t] [-b] [-s] [-d] [-h]"
     echo "  -t      test triggers and queries (3rd delivery only)"
     echo "  -b      enable batch correction (scan subfolders of current one), useful for professors"
+    echo "  -q      force sequential processing instead of parallel (useful for batch mode only, use on slower machines)."
     echo "  -s      (show/copy-paste scripts of students to the output.txt file after running checks "
     echo "  -d      do not generate diagram using schemacrawler"
     echo "  -h      print this help"
 }
 
-while getopts 'tbsdh' arg; do
+while getopts 'tbsdhq' arg; do
     case ${arg} in
 				# test triggers and queries (3rd delivery)
         t) TEST_TRIGGERS_AND_QUERIES="true"
@@ -39,6 +40,9 @@ while getopts 'tbsdh' arg; do
 				;;
 				# do not generate diagram using schemacrawler
 				d) GENERATE_DIAGRAM="false"
+				;;
+        # force sequential generation instead of parallelizing on batch mode
+				q) FORCE_SEQUENTIAL="true"
 				;;
         h) usage && exit 0
 				;;
@@ -72,6 +76,10 @@ fi
 
 if [[ "$SHOW_SCRIPTS_AT_END" == "true" ]]; then
 	print_message "Appending a copy of the scripts to the end of the output.txt file."
+fi
+
+if [[ "$FORCE_SEQUENTIAL" == "true" ]]; then
+	print_message "Disabling parallel processing (slower machine setting active)."
 fi
 
 function exists()
@@ -229,14 +237,20 @@ else
   # run all generation in parallel
 	for d in ./*; do
 	  if [ -d "$d" ]; then
-			run_everything "$(pwd)/${d#.}" &
+      if [[ "$FORCE_SEQUENTIAL" == "true" ]]; then
+        run_everything "$(pwd)/${d#.}"
+      else
+        run_everything "$(pwd)/${d#.}" &
+      fi
+
 	  fi
 	done
-	wait
+
+  if [[ "$FORCE_SEQUENTIAL" != "true" ]]; then
+  	wait
+  fi
 
   print_message "All generation done!"
-
-  ls -la .
 
   # print results sequentially
   for d in ./*; do
