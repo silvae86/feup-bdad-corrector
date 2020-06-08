@@ -121,6 +121,8 @@ function test_triggers
 {
 	for (( i = 1; i <= 3; i++ )); do
 		printf "\########### Running trigger ./gatilho${i}_XXXXXX.sql ###########\n\n"
+    recreate || printf "Error recreating database before executing trigger ./gatilho${i}_XXXXXX.sql"
+
 		if exists "./gatilho${i}_adiciona.sql" &&  exists "./gatilho${i}_verifica.sql" && exists "./gatilho${i}_remove.sql" ;
     then
       printf "OK: ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql and ./gatilho${i}_remove.sql files are in the folder\n"
@@ -170,6 +172,22 @@ function copy_results()
   cp "$source/diagram.png" "$target"
 }
 
+function create()
+{
+  printf "$PREAMBLE" | cat - criar.sql | sqlite3 database.db >> output.txt 2>&1
+}
+
+function populate()
+{
+  printf "$PREAMBLE" | cat - povoar.sql | sqlite3 database.db >> output.txt 2>&1
+}
+
+function recreate()
+{
+  rm -f database.db
+  create && populate || ( printf "Error recreating database" && return 1 )
+}
+
 function run_everything() {
 	local d="$1"
   local dirname
@@ -189,13 +207,13 @@ function run_everything() {
 
 		print_message "Creating database"
 
-		printf "$PREAMBLE" | cat - criar.sql | sqlite3 database.db >> output.txt 2>&1 && \
+		create && \
 		print_message "Creates BD without errors.\n" || \
 		print_message "Errors creating DB!\n"
 
 		print_message "Populating database..."
 
-		printf "$PREAMBLE" | cat - povoar.sql | sqlite3 database.db >> output.txt 2>&1 && \
+		populate && \
 		print_message "Populates BD without errors.\n" || \
 		print_message "Errors populating DB!\n"
 
