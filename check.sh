@@ -251,24 +251,23 @@ else
 	  if [ -d "$d" ]; then
       if [[ "$FORCE_SEQUENTIAL" == "true" ]]; then
         run_everything "$(pwd)/${d#.}"
+        cat output.txt
       else
         run_everything "$(pwd)/${d#.}" &
       fi
-
 	  fi
 	done
 
   if [[ "$FORCE_SEQUENTIAL" != "true" ]]; then
   	wait
+    # print results sequentially
+    for d in ./*; do
+      if [ -d "$d" ]; then
+        cd "$d" || (printf "ERROR: $d does not exist." && exit 1)
+        cat output.txt
+      fi
+    done
   fi
 
   print_message "All generation done!"
-
-  # print results sequentially
-  for d in ./*; do
-    if [ -d "$d" ]; then
-      cd "$d" || (printf "ERROR: $d does not exist." && exit 1)
-      cat output.txt
-    fi
-  done
 fi
