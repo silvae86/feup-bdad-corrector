@@ -77,7 +77,7 @@ fi
 function exists()
 {
 	local file=$1
-	[ -f "$file" ] || printf "File $file does not exist!\n" && return 1
+	[ -f "$file" ] || ( printf "File $file does not exist!\n" && return 1 )
 	return 0
 }
 
@@ -85,7 +85,7 @@ function diagram
 {
   local database_path="$1/database.db"
   local diagram_path="$1/diagram.png"
-  local target_dir="$2"
+  # local target_dir="$2"
 
 	/opt/schemacrawler/schemacrawler.sh -server sqlite -database "$database_path" -user -password -loglevel SEVERE -sort-columns -infolevel maximum -command details -outputformat png -outputfile "$diagram_path" -g "/feup-bdad-corrector/schemacrawler.config.properties"
 }
@@ -94,9 +94,14 @@ function run_queries
 {
 	for (( i = 1; i <= 10; i++ )); do
 		printf "\n---------Running query ./int${i}.sql---------\n\n"
-		exists "./int${i}.sql" || printf "OK: ./int${i}.sql file is in the folder\n" && \
-			printf "$PREAMBLE" | cat - int${i}.sql | sqlite3 database.db \
-		|| (printf "Error running query ${i}.\n" && return 1)
+    if exists "./int${i}.sql" ; then
+      printf "OK: ./int${i}.sql file is in the folder\n"
+      printf "$PREAMBLE" | cat - int${i}.sql | sqlite3 database.db\
+        || (printf "Error running query ${i}.\n" && return 1)
+    else
+        printf "ERROR: ./int${i}.sql file is missing inside the folder\n"
+        return 1
+    fi
 	done
 }
 
@@ -104,11 +109,23 @@ function test_triggers
 {
 	for (( i = 1; i <= 3; i++ )); do
 		printf "\n---------Running trigger ./gatilho${i}_XXXXXX.sql---------\n\n"
-		( exists "./gatilho${i}_adiciona.sql" && exists "./gatilho${i}_verifica.sql" && exists "./gatilho${i}_remove.sql" ) && printf "OK: ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql and ./gatilho${i}_remove.sql files are in the folder\n" && \
-			printf "$PREAMBLE" | cat - gatilho${i}_adiciona.sql | sqlite3 database.db >> output.txt 2>&1 && \
-			printf "$PREAMBLE" | cat - gatilho${i}_verifica.sql | sqlite3 database.db >> output.txt 2>&1 && \
-			printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db >> output.txt 2>&1 \
-		|| (printf "Error running trigger ${i}.?\n" && return 1)
+		if exists "./gatilho${i}_adiciona.sql" &&  exists "./gatilho${i}_verifica.sql" && exists "./gatilho${i}_remove.sql" ;
+    then
+      printf "OK: ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql and ./gatilho${i}_remove.sql files are in the folder\n"
+      printf "$PREAMBLE" | cat - gatilho${i}_adiciona.sql | sqlite3 database.db && \
+			printf "$PREAMBLE" | cat - gatilho${i}_verifica.sql | sqlite3 database.db && \
+			printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db \
+		    || (
+          printf "Error running trigger ${i}." &&
+          printf "Check for the appropriate error message and validate" &&
+          printf "if it is really supposed to be like this.\n"
+          printf "If it is a BEFORE INSERT trigger and you intend to block" &&
+          printf "invalid operations, for example, you may safely ignore" &&
+          printf "this error message.\n\n" && return 1)
+    else
+        printf "ERROR: Either ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql or ./gatilho${i}_remove.sql file is missing inside the folder\n"
+        return 1
+    fi
 	done
 }
 
@@ -133,14 +150,17 @@ function copy_results()
 
 function run_everything() {
 	local d="$1"
-  local dirname=`basename "$d"`
-  local temp_dir="/tmp/$(uuidgen)"
+  local dirname
+  local temp_dir
+  dirname=`basename "$d"`
+  temp_dir="/tmp/$(uuidgen)"
+
   mkdir -p "$temp_dir"
   cp -R "$d/." "$temp_dir"
 	clean_dir "$d"
   clean_dir "$temp_dir"
 
-	cd "$temp_dir"
+	cd "$temp_dir" || (printf "ERROR: $temp_dir does not exist." && exit 1)
 	touch output.txt
 	{
     print_message "Running script over $dirname..."
@@ -199,7 +219,7 @@ function run_everything() {
 	}	>> output.txt 2>&1
 
   copy_results "$temp_dir" "$d" >> /dev/null 2>&1
-  cd "$ORIGINAL_DIR"
+  cd "$ORIGINAL_DIR" || (printf "ERROR: $ORIGINAL_DIR does not exist." && exit 1)
 }
 
 if [[ "$BATCH_CORRECTION" != "true" ]]; then
@@ -216,10 +236,12 @@ else
 
   print_message "All generation done!"
 
+  ls -la .
+
   # print results sequentially
   for d in ./*; do
     if [ -d "$d" ]; then
-      cd "$d"
+      cd "$d" || (printf "ERROR: $d does not exist." && exit 1)
       cat output.txt
     fi
   done
