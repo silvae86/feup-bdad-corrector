@@ -101,13 +101,14 @@ function diagram
 function run_queries
 {
 	for (( i = 1; i <= 10; i++ )); do
-		printf "\n---------Running query ./int${i}.sql---------\n\n"
+		printf "\n########### Running query ./int${i}.sql ###########\n\n"
     if exists "./int${i}.sql" ; then
-      printf "OK: ./int${i}.sql file is in the folder\n"
-      printf "\n---------int${i}.sql---------\n\n"
-      cat  int${i}.sql >> output.txt
-      printf "\n-----------------------------\n\n"
-      printf "$PREAMBLE" | cat - int${i}.sql | sqlite3 database.db\
+      printf "OK: ./int${i}.sql file is in the folder\n" && \
+      printf "\n---------int${i}.sql---------\n\n" && \
+      cat  int${i}.sql | cat -n >> output.txt && \
+      printf "\n-----------------------------\n\n" && \
+      printf "$PREAMBLE" | cat - int${i}.sql | sqlite3 database.db  && \
+      printf "\n-----------------------------\n\n" \
         || (printf "Error running query ${i}.\n" && return 1)
     else
         printf "ERROR: ./int${i}.sql file is missing inside the folder\n"
@@ -119,23 +120,24 @@ function run_queries
 function test_triggers
 {
 	for (( i = 1; i <= 3; i++ )); do
-		printf "\n---------Running trigger ./gatilho${i}_XXXXXX.sql---------\n\n"
+		printf "\########### Running trigger ./gatilho${i}_XXXXXX.sql ###########\n\n"
 		if exists "./gatilho${i}_adiciona.sql" &&  exists "./gatilho${i}_verifica.sql" && exists "./gatilho${i}_remove.sql" ;
     then
       printf "OK: ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql and ./gatilho${i}_remove.sql files are in the folder\n"
 
-      printf "\n---------gatilho${i}_adiciona.sql---------\n\n"
-      cat  gatilho${i}_adiciona.sql >> output.txt
-      printf "\n---------gatilho${i}_verifica.sql---------\n\n"
-      cat  gatilho${i}_verifica.sql >> output.txt
-      printf "\n---------gatilho${i}_remove.sql---------\n\n"
-      cat  gatilho${i}_remove.sql >> output.txt
-      printf "\n-----------------------------\n\n"
-
-      printf "$PREAMBLE" | cat - gatilho${i}_adiciona.sql | sqlite3 database.db && \
-			printf "$PREAMBLE" | cat - gatilho${i}_verifica.sql | sqlite3 database.db && \
-			printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db \
-		    || (
+      printf "\n---------gatilho${i}_adiciona.sql---------\n\n" && \
+      cat  gatilho${i}_adiciona.sql | cat -n >> output.txt && \
+      printf "\n-----------------------------\n\n" && \
+      printf "$PREAMBLE" | cat - gatilho${i}_adiciona.sql |  sqlite3 database.db && \
+      printf "\n---------gatilho${i}_verifica.sql---------\n\n" && \
+      cat  gatilho${i}_verifica.sql | cat -n >> output.txt && \
+      printf "$PREAMBLE" | cat - gatilho${i}_verifica.sql | sqlite3 database.db && \
+      printf "\n---------gatilho${i}_remove.sql---------\n\n" && \
+      cat  gatilho${i}_remove.sql | cat -n >> output.txt && \
+      printf "\n-----------------------------\n\n" && \
+      printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db && \
+      printf "\n-----------------------------\n\n"  \
+      || ( \
           printf "Error running trigger ${i}." &&
           printf "Check for the appropriate error message and validate" &&
           printf "if it is really supposed to be like this.\n"
