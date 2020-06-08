@@ -22,7 +22,7 @@ function usage {
     echo "  -t      test triggers and queries (3rd delivery only)"
     echo "  -b      enable batch correction (scan subfolders of current one), useful for professors"
     echo "  -q      force sequential processing instead of parallel (useful for batch mode only, use on slower machines)."
-    echo "  -s      (show/copy-paste scripts of students to the output.txt file after running checks "
+    echo "  -s      (show/copy-paste scripts of students to the output.txt file after running checks."
     echo "  -d      do not generate diagram using schemacrawler"
     echo "  -h      print this help"
 }
@@ -104,6 +104,9 @@ function run_queries
 		printf "\n---------Running query ./int${i}.sql---------\n\n"
     if exists "./int${i}.sql" ; then
       printf "OK: ./int${i}.sql file is in the folder\n"
+      printf "\n---------int${i}.sql---------\n\n"
+      cat  int${i}.sql >> output.txt
+      printf "\n-----------------------------\n\n"
       printf "$PREAMBLE" | cat - int${i}.sql | sqlite3 database.db\
         || (printf "Error running query ${i}.\n" && return 1)
     else
@@ -120,6 +123,15 @@ function test_triggers
 		if exists "./gatilho${i}_adiciona.sql" &&  exists "./gatilho${i}_verifica.sql" && exists "./gatilho${i}_remove.sql" ;
     then
       printf "OK: ./gatilho${i}_adiciona.sql, ./gatilho${i}_verifica.sql and ./gatilho${i}_remove.sql files are in the folder\n"
+
+      printf "\n---------gatilho${i}_adiciona.sql---------\n\n"
+      cat  gatilho${i}_adiciona.sql >> output.txt
+      printf "\n---------gatilho${i}_verifica.sql---------\n\n"
+      cat  gatilho${i}_verifica.sql >> output.txt
+      printf "\n---------gatilho${i}_remove.sql---------\n\n"
+      cat  gatilho${i}_remove.sql >> output.txt
+      printf "\n-----------------------------\n\n"
+
       printf "$PREAMBLE" | cat - gatilho${i}_adiciona.sql | sqlite3 database.db && \
 			printf "$PREAMBLE" | cat - gatilho${i}_verifica.sql | sqlite3 database.db && \
 			printf "$PREAMBLE" | cat - gatilho${i}_remove.sql | sqlite3 database.db \
