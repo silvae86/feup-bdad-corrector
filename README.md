@@ -21,7 +21,7 @@ The best part is, you can set it up in any computer and run it locally!
 - For the 3rd delivery  (`-t` CLI argument must be present to activate this mode)
   1. Everything in the 2nd delivery
   2. runs the 10 query files expected (verifies the presence of all files with correct names: `int{1 to 10}.sql`)
-  2. Runs the 3 trigger files (x3, as you need 3 files for each: `gatilho{1 to 3}_adiciona.sql`, `atilho{1 to 3}_verifica.sql`, and `atilho{1 to 3}_remove.sql`
+  2. Runs the 3 trigger files (x3, as you need 3 files for each: `gatilho{1 to 3}_adiciona.sql`, `gatilho{1 to 3}_verifica.sql`, and `gatilho{1 to 3}_remove.sql`
 
 - It produces two outputs
   1. `output.txt` - The result of the execution of the scripts
@@ -64,6 +64,7 @@ docker run -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```txt
   -t      test triggers and queries (3rd delivery only)
   -b      enable batch correction (scan subfolders of current one), useful for professors
+  -q      force sequential processing instead of parallel (useful for batch mode only, use on slower machines).
   -s      (show/copy-paste scripts of students to the output.txt file after running checks
   -d      do not generate diagram using schemacrawler
   -h      print this help
