@@ -50,14 +50,14 @@ docker run -v "$(pwd)":/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t 
 
 ```shell
 docker pull joaorosilva/feup-bdad-corrector:latest
-docker run -v %cd%:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+docker run -v "%cd%":/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ### In Windows PowerShell :
 
 ```PowerShell
 docker pull joaorosilva/feup-bdad-corrector:latest
-docker run -v ${PWD}:/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
+docker run -v "${PWD}":/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t -s
 ```
 
 ## Possible arguments:
