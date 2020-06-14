@@ -27,7 +27,7 @@ The best part is, you can set it up in any computer and run it locally!
         2. Runs `criar.sql`
         3. Runs `povoar.sql`
         4. Runs `gatilho{i}_adiciona.sql`
-        5. Runs`gatilhoi}_verifica.sql`
+        5. Runs `gatilho{i}_verifica.sql`
         6. Runs `gatilho{i}_remove.sql`
 
 - It produces two outputs
