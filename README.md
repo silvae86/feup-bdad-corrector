@@ -13,15 +13,22 @@ The best part is, you can set it up in any computer and run it locally!
 
 - For the 2nd delivery
   1. Verifies the presence of the required files (`criar.sql` and `povoar.sql`)
-  2. Runs them both and output any errors found
-  3. Checks database consistency for wrong foreign keys, etc.
-  4. Generates a diagram of the database using [schemacrawler 15](https://www.schemacrawler.com/). This is a completely UNOFFICIAL diagram type and only allows you to validate graphically if you are missing FKs or PKs, for example. It should not be replicated in practical or theoretical classes. Stick to the types of diagrams taught in class!
-  5. If you use the `-s` argument, it will also copy your scripts to the `output.txt` file, with line numbers added, so you can pinpoint your mistakes
+  2. Destroys database file if found
+  3. Runs (`criar.sql` and `povoar.sql`) and output any errors found
+  4. Checks database consistency for wrong foreign keys, etc.
+  5. Generates a diagram of the database using [schemacrawler 16](https://www.schemacrawler.com/). This is a completely UNOFFICIAL diagram type and only allows you to validate graphically if you are missing FKs or PKs, for example. It should not be replicated in practical or theoretical classes. Stick to the types of diagrams taught in class!
+  6. If you use the `-s` argument, it will also copy your scripts to the `output.txt` file, with line numbers added, so you can pinpoint your mistakes
 
 - For the 3rd delivery  (`-t` CLI argument must be present to activate this mode)
   1. Everything in the 2nd delivery
-  2. runs the 10 query files expected (verifies the presence of all files with correct names: `int{1 to 10}.sql`)
-  2. Runs the 3 trigger files (x3, as you need 3 files for each: `gatilho{1 to 3}_adiciona.sql`, `gatilho{1 to 3}_verifica.sql`, and `gatilho{1 to 3}_remove.sql`
+  2. Runs the 10 query files expected (verifying the presence of all files with correct names: `int{1 to 10}.sql`)
+  3. For each trigger `gatilho{i}_XXXXXX.sql`, where i is between 1 and 3:
+    3i) Destroys the database (this ensures the same database state for every trigger)
+    3ii) Runs `criar.sql`
+    3ii) Runs `povoar.sql`
+    3iii) Runs `gatilho{i}_adiciona.sql`, 
+    3iv) Runs`gatilhoi}_verifica.sql`
+    3v) Runs `gatilho{i}_remove.sql`
 
 - It produces two outputs
   1. `output.txt` - The result of the execution of the scripts
