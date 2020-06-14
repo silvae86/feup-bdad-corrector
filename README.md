@@ -11,7 +11,7 @@ The best part is, you can set it up in any computer and run it locally!
 
 ## What does it do?
 
-- For the 2nd delivery
+### For the 2nd delivery
   1. Verifies the presence of the required files (`criar.sql` and `povoar.sql`)
   2. Destroys database file if found
   3. Runs (`criar.sql` and `povoar.sql`) and output any errors found
@@ -19,7 +19,7 @@ The best part is, you can set it up in any computer and run it locally!
   5. Generates a diagram of the database using [schemacrawler 16](https://www.schemacrawler.com/). This is a completely UNOFFICIAL diagram type and only allows you to validate graphically if you are missing FKs or PKs, for example. It should not be replicated in practical or theoretical classes. Stick to the types of diagrams taught in class!
   6. If you use the `-s` argument, it will also copy your scripts to the `output.txt` file, with line numbers added, so you can pinpoint your mistakes
 
-- For the 3rd delivery  (`-t` CLI argument must be present to activate this mode)
+### For the 3rd delivery  (`-t` CLI argument must be present to activate this mode)
   1. Everything in the 2nd delivery
   2. Runs the 10 query files expected (verifying the presence of all files with correct names: `int{1 to 10}.sql`)
   3. For each trigger `gatilho{i}_XXXXXX.sql`, where i is between 1 and 3:
