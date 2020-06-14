@@ -23,12 +23,12 @@ The best part is, you can set it up in any computer and run it locally!
   1. Everything in the 2nd delivery
   2. Runs the 10 query files expected (verifying the presence of all files with correct names: `int{1 to 10}.sql`)
   3. For each trigger `gatilho{i}_XXXXXX.sql`, where i is between 1 and 3:
-    3i) Destroys the database (this ensures the same database state for every trigger)
-    3ii) Runs `criar.sql`
-    3ii) Runs `povoar.sql`
-    3iii) Runs `gatilho{i}_adiciona.sql`, 
-    3iv) Runs`gatilhoi}_verifica.sql`
-    3v) Runs `gatilho{i}_remove.sql`
+        1. Destroys the database (this ensures the same database state for every trigger)
+        2. Runs `criar.sql`
+        3. Runs `povoar.sql`
+        4. Runs `gatilho{i}_adiciona.sql`
+        5. Runs`gatilhoi}_verifica.sql`
+        6. Runs `gatilho{i}_remove.sql`
 
 - It produces two outputs
   1. `output.txt` - The result of the execution of the scripts
