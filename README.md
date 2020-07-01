@@ -81,9 +81,16 @@ docker run -v "${PWD}":/bdad -w /bdad joaorosilva/feup-bdad-corrector:latest -t 
 
 By default, the script will run in the current folder where you execute the commands below. It also includes a batch mode for professors to run the script on all subdirectories of the current directory. The code executed is the same, it just iterates over all subdirs if the `-b` parameter is specified. If the batch mode is specified, operations are executed in parallel to take advantage of a multicore processor, if you have one.
 
-#### For the curious
+### For the curious
 
 This command mounts the current folder in a Docker container, more specifically at its `/bdad` location; this way, it has bidirectional access to all files placed in the current directory (sql scripts...). Then it runs the script, placing outputs also in the current folder.
+
+To build and test the image locally, this is the command:
+
+```shell
+docker build -t feup-bdad-corrector:latest .
+docker run -v "%cd%":/bdad -w /bdad feup-bdad-corrector:latest -t -s
+```
 
 ## Important disclaimer
 
