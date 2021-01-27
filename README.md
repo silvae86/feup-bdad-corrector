@@ -1,4 +1,4 @@
-# feup-bdad-corrector
+# FEUP-BDAD Correction automator (feup-bdad-corrector)
 
 [![](https://images.microbadger.com/badges/image/joaorosilva/feup-bdad-corrector.svg)](https://microbadger.com/images/joaorosilva/feup-bdad-corrector "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/joaorosilva/feup-bdad-corrector.svg)](https://microbadger.com/images/joaorosilva/feup-bdad-corrector "Get your own version badge on microbadger.com")
